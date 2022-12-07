@@ -187,13 +187,33 @@ function drawInterface()
   }
 }
 
+/* -------------array outputs--------
+0 date and hour
+1 PmGdaLeczkow
+2 PmGdaPowWars
+3 PmGdaWyzwole
+4 PmGdyPorebsk
+5 PmSopBiPlowc
+6 PmGdySzafran
+
+  PmGdaPowWiel- I can't find it in Excels
+*/
+
 let co2_columns;
 function co2_read_row(row){
   row += 5;
   co2_row = [];
+  co2_row[0] = co2_table.getString(row,0);
+  co2_row[1] = co2_table.getString(row,38);
+  co2_row[2] = co2_table.getString(row,39);
+  co2_row[3] = co2_table.getString(row,40);
+  co2_row[4] = co2_table.getString(row,41);
+  co2_row[5] = co2_table.getString(row,44);
+  co2_row[6] = 0;
+  /*
   for(let i=0; i<co2_columns; i++){
     co2_row[i] = co2_table.getString(row,i);
-  }
+  }*/
   return co2_row;
 }
 
@@ -201,9 +221,17 @@ let no2_columns;
 function no2_read_row(row){
   row += 5;
   no2_row = [];
+  no2_row[0] = no2_table.getString(row,0);
+  no2_row[1] = no2_table.getString(row,89);
+  no2_row[2] = no2_table.getString(row,90);
+  no2_row[3] = no2_table.getString(row,91);
+  no2_row[4] = no2_table.getString(row,92);
+  no2_row[5] = no2_table.getString(row,96);
+  no2_row[6] = no2_table.getString(row,93);
+  /*
   for(let i=0; i<no2_columns; i++){
     no2_row[i] = no2_table.getString(row,i);
-  }
+  }*/
   return no2_row;
 }
 
@@ -211,8 +239,16 @@ let pm10_columns;
 function pm10_read_row(row){
   row += 5;
   pm10_row = [];
+  pm10_row[0] = pm10_table.getString(row,0);
+  pm10_row[1] = pm10_table.getString(row,114);
+  pm10_row[2] = pm10_table.getString(row,115);
+  pm10_row[3] = pm10_table.getString(row,116);
+  pm10_row[4] = pm10_table.getString(row,117);
+  pm10_row[5] = pm10_table.getString(row,122);
+  pm10_row[6] = pm10_table.getString(row,118);
+  /*
   for(let i=0; i<pm10_columns; i++){
     pm10_row[i] = pm10_table.getString(row,i);
-  }
+  }*/
   return pm10_row;
 }
