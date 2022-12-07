@@ -15,8 +15,25 @@ let alpha;
 // Color
 let col;
 
+let co2_table;
+let no2_table;
+let pm10_table;
+var co2_path = "2021_CO_1g.csv"
+var no2_path = "2021_NO2_1g.csv"
+var pm10_path = "2021_PM10_1g.csv"
+
+function preload() {
+  co2_table = loadTable('data/' + co2_path, 'csv', 'header');
+  no2_table = loadTable('data/' + no2_path, 'csv', 'header');
+  pm10_table = loadTable('data/' + pm10_path, 'csv', 'header');
+}
+
 function setup() 
 {
+  co2_columns = co2_table.getColumnCount();
+  no2_columns = no2_table.getColumnCount();
+  pm10_columns = pm10_table.getColumnCount();
+  
   mapImage = loadImage('data/map.png');
   beastImage = loadImage('data/Papieżółw - Bestia z Wadowic.png');
   
@@ -170,3 +187,32 @@ function drawInterface()
   }
 }
 
+let co2_columns;
+function co2_read_row(row){
+  row += 5;
+  co2_row = [];
+  for(let i=0; i<co2_columns; i++){
+    co2_row[i] = co2_table.getString(row,i);
+  }
+  return co2_row;
+}
+
+let no2_columns;
+function no2_read_row(row){
+  row += 5;
+  no2_row = [];
+  for(let i=0; i<no2_columns; i++){
+    no2_row[i] = no2_table.getString(row,i);
+  }
+  return no2_row;
+}
+
+let pm10_columns;
+function pm10_read_row(row){
+  row += 5;
+  pm10_row = [];
+  for(let i=0; i<pm10_columns; i++){
+    pm10_row[i] = pm10_table.getString(row,i);
+  }
+  return pm10_row;
+}
