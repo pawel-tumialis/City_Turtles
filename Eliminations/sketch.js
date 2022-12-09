@@ -222,14 +222,18 @@ function drawMap()
 function drawInterface() 
 {
   fill(255);
-  //sliderTIME.position(;
   textSize(Y_OFFSET);
   text("Date: " + co_read_row(timeIndex)[0], width - 3.5*X_OFFSET, 2*Y_OFFSET);
-  textSize(Y_OFFSET/3);
-  text("Location: " + nf(lat(mouseX),2,2) + "N, " + nf(long(mouseY),3,2) + "E", width - 3.5*X_OFFSET, 5*Y_OFFSET)
-  text("NO2    : " /* + no2_data[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 5.5*Y_OFFSET);
-  text("CO     : " /* + co_data[mouseX/gridSize][mouseY/gridSize] */ + " μg/m3", width - 3.5*X_OFFSET, 6*Y_OFFSET);
-  text("PM10 : " /*+ pm10_data[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 6.5*Y_OFFSET);
+  
+  if(mouseX > mapPos.x && mouseX < mapPos.x + mapImage.width && mouseY > mapPos.y && mouseY < mapPos.y + mapImage.height)
+  {
+    textSize(Y_OFFSET/3);
+    text("Location: " + nf(lat(mouseX),2,2) + "N, " + nf(long(mouseY),3,2) + "E", width - 3.5*X_OFFSET, 5*Y_OFFSET)
+    text("NO2    : " /* + no2_data[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 5.5*Y_OFFSET);
+    text("CO     : " /* + co_data[mouseX/gridSize][mouseY/gridSize] */ + " μg/m3", width - 3.5*X_OFFSET, 6*Y_OFFSET);
+    text("PM10 : " /*+ pm10_data[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 6.5*Y_OFFSET);
+  }
+
   textSize(Y_OFFSET/5);
   text("DEBUG: ", width - X_OFFSET, height - 3.5*Y_OFFSET);
   text("Data count = " + str(data_cnt), width - X_OFFSET, height - 2.5*Y_OFFSET);
