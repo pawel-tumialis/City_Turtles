@@ -2,8 +2,8 @@ const STATION_CNT = 7;
 
 const gridSize = 10;
 const MIN_OP = 30, MAX_OP = 255;
-const MAX_NO2 = 401;
-const MAX_CO = 21;
+const MAX_NO2 = 401/2;
+const MAX_CO = 21/2;
 const MAX_PM10 = 201;
 const MAX_DIST_SQ = 10000;
 
@@ -228,12 +228,12 @@ function drawInterface()
   if(mouseX > mapPos.x && mouseX < mapPos.x + mapImage.width && mouseY > mapPos.y && mouseY < mapPos.y + mapImage.height)
   {
     textSize(Y_OFFSET/3);
-    text("Location: " + nf(lat(mouseX),2,2) + "N, " + nf(long(mouseY),3,2) + "E", width - 3.5*X_OFFSET, 5*Y_OFFSET)
-    text("NO2    : " /* + no2_data[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 5.5*Y_OFFSET);
-    text("CO     : " /* + co_data[mouseX/gridSize][mouseY/gridSize] */ + " μg/m3", width - 3.5*X_OFFSET, 6*Y_OFFSET);
-    text("PM10 : " /*+ pm10_data[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 6.5*Y_OFFSET);
+    text("Location: " + nf(lat(mouseY),2,2) + "N, " + nf(long(mouseX),3,2) + "E", width - 3.5*X_OFFSET, 5*Y_OFFSET)
+    //text("NO2    : " /* + no2_data[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 5.5*Y_OFFSET);
+    //text("CO     : " /* + co_data[mouseX/gridSize][mouseY/gridSize] */ + " μg/m3", width - 3.5*X_OFFSET, 6*Y_OFFSET);
+    //text("PM10 : " /*+ pm10_data[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 6.5*Y_OFFSET);
   }
-
+/*------------DEBUG--------
   textSize(Y_OFFSET/5);
   text("DEBUG: ", width - X_OFFSET, height - 3.5*Y_OFFSET);
   text("Data count = " + str(data_cnt), width - X_OFFSET, height - 2.5*Y_OFFSET);
@@ -241,18 +241,17 @@ function drawInterface()
   text("x_map = " + str(int(mouseX - mapPos.x)) + ", y_map = " + str(int(mouseY - mapPos.y)) + "", width - X_OFFSET, height - 1.5*Y_OFFSET);
   text("MODE = " + str(currentMode), width - X_OFFSET, height - Y_OFFSET);
   text("x = " + str(int(mouseX)) + ", y = " + str(int(mouseY)) + "", width - X_OFFSET, height - 0.5*Y_OFFSET);
+  */
 }
 
-function lat(mx)
+function lat(my)
 {
-  // TODO correct calculation from pixel to latitude
-  return 54 + (mx + mapPos.x) / 200;
+  return float(map(my, 0, mapImage.height, 54.582409, 54.325344));
 }
 
-function long(my)
+function long(mx)
 {
-  // TODO correct calculation from pixel to longitude
-  return 18 + ( my + mapPos.y) / 200;
+  return float(map(mx, 0, mapImage.width, 18.347572, 18.780577));
 }
 
 function updateData()
@@ -348,7 +347,7 @@ function drawData()
         pm10_op = constrain(pm10_op, MIN_OP, MAX_OP);
       }
 
-      avg_op = no2_op + co_op + pm10_op;
+      avg_op = (no2_op + co_op + pm10_op)/3;
 
       // no2_data[x][y] = sum_no2;
       // co_data[x][y] = sum_co;
@@ -361,25 +360,25 @@ function drawData()
 
         case MODE.ALL:
           // AVG
-          fill(200, avg_op);
+          fill(100, avg_op);
           ellipse(px  + gridSize/2, py  + gridSize/2, gridSize/2, gridSize/2);
           break;
   
         case MODE.NO2:
           // NO2
-          fill(255,0,0, no2_op);
+          fill(200,0,0, no2_op);
           ellipse(px, py, gridSize/2, gridSize/2);
           break;
     
         case MODE.CO:
           // CO
-          fill(0,0,255, co_op);
+          fill(0,0,200, co_op);
           ellipse(px + gridSize/2, py, gridSize/2, gridSize/2);
           break;
     
         case MODE.PM10:
           // PM10
-          fill(0,255,0, pm10_op);
+          fill(0,30,30, pm10_op);
           ellipse(px, py + gridSize/2, gridSize/2, gridSize/2);
           break;
 
