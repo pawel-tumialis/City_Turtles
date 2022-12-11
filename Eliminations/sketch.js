@@ -5,7 +5,7 @@ const MIN_OP = 30, MAX_OP = 255;
 const MAX_NO2 = 401/2;
 const MAX_CO = 21/2;
 const MAX_PM10 = 201;
-const MAX_DIST_SQ = 10000;
+const MAX_DIST = 100;
 
 let MODE = { NONE : -1, ALL : 0,  NO2 : 1,  CO : 2,  PM10 : 3 };
 let currentMode = MODE.NONE;
@@ -47,9 +47,13 @@ let PmGdySzafran;
 let last_inc_timestamp_ms = 0;
 let inc_interval_ms = 20;
 
-// let no2_data = [];
-// let co_data = [];
-// let pm10_data = [];
+let no2_data = [];
+let co_data = [];
+let pm10_data = [];
+
+let no2_map = [];
+let co_map = [];
+let pm10_map = [];
 
 function preload() 
 {
@@ -62,18 +66,18 @@ function setup()
 {
   mapImage = loadImage('data/map.png');
 
-  // for (let xx = 0; xx < mapImage.width/gridSize; xx++) 
-  // {
-  //   no2_data[xx] = []; 
-  //   co_data[xx] = []; 
-  //   pm10_data[xx] = []; 
-  //   for (let yy = 0; yy < mapImage.height/gridSize; yy++) 
-  //   {
-  //     no2_data[xx][y]y = 0.0;
-  //     co_data[xx][yy] = 0.0; 
-  //     pm10_data[xx][yy] = 0.0; 
-  //   }
-  // }
+  for (let xx = 0; xx < mapImage.width/gridSize; xx++) 
+  {
+    no2_map[xx] = []; 
+    co_map[xx] = []; 
+    pm10_map[xx] = []; 
+    for (let yy = 0; yy < mapImage.height/gridSize; yy++) 
+    {
+      no2_map[xx][yy] = 0.0;
+      co_map[xx][yy] = 0.0; 
+      pm10_map[xx][yy] = 0.0; 
+    }
+  }
  
   co_columns = co_table.getColumnCount();
   no2_columns = no2_table.getColumnCount();
@@ -229,9 +233,9 @@ function drawInterface()
   {
     textSize(Y_OFFSET/3);
     text("Location: " + nf(lat(mouseY),2,2) + "N, " + nf(long(mouseX),3,2) + "E", width - 3.5*X_OFFSET, 5*Y_OFFSET)
-    //text("NO2    : " /* + no2_data[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 5.5*Y_OFFSET);
-    //text("CO     : " /* + co_data[mouseX/gridSize][mouseY/gridSize] */ + " μg/m3", width - 3.5*X_OFFSET, 6*Y_OFFSET);
-    //text("PM10 : " /*+ pm10_data[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 6.5*Y_OFFSET);
+    //text("NO2    : " /* + no2_map[int(mouseX/gridSize)][int(mouseY/gridSize)] */+ " μg/m3", width - 3.5*X_OFFSET, 5.5*Y_OFFSET);
+    //text("CO     : " /* + co_map[int(mouseX/gridSize][mouseY/gridSize] */ + " μg/m3", width - 3.5*X_OFFSET, 6*Y_OFFSET);
+    //text("PM10 : " /*+ pm10_map[mouseX/gridSize][mouseY/gridSize] */+ " μg/m3", width - 3.5*X_OFFSET, 6.5*Y_OFFSET);
   }
 /*------------DEBUG--------
   textSize(Y_OFFSET/5);
@@ -292,7 +296,7 @@ function drawData()
   noStroke();
   let no2_op = 0, co_op = 0, pm10_op = 0, px = 0, py = 0;
   let pvec = createVector(px, py);
-  let dist_sq = 0;
+  let dist = 0;
   let sum_dist = 0;
   let sum_no2 = 0, sum_co = 0, sum_pm10 = 0;
 
@@ -315,14 +319,14 @@ function drawData()
       /* Start from 1 to ignore PowWiel - no Data */
       for(let i = 1; i < STATION_CNT; i++) 
       {
-        dist_sq = distSq(station_pos[i], pvec);
+        dist = station_pos[i].dist(pvec);
 
-        if(dist_sq < MAX_DIST_SQ)
+        if(dist < MAX_DIST)
         {
-          sum_no2 += dist_sq * station_no2[i];
-          sum_co += dist_sq * station_co[i];
-          sum_pm10 += dist_sq * station_pm10[i];
-          sum_dist += dist_sq;   
+          sum_no2 += dist * station_no2[i];
+          sum_co += dist * station_co[i];
+          sum_pm10 += dist * station_pm10[i];
+          sum_dist += dist;   
         }
       }
 
@@ -349,9 +353,9 @@ function drawData()
 
       avg_op = (no2_op + co_op + pm10_op)/3;
 
-      // no2_data[x][y] = sum_no2;
-      // co_data[x][y] = sum_co;
-      // pm10_data[x][y] = sum_pm10;
+    //   no2_map[x][y] = sum_no2;
+    //   co_map[x][y] = sum_co;
+    //   pm10_map[x][y] = sum_pm10;
 
       switch(currentMode)
       {
@@ -387,11 +391,6 @@ function drawData()
       }
     } 
   }
-}
-
-function distSq(p1, p2)
-{
-  return int((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y));
 }
 
 function button_over(name_id, button_position, meas_no2, meas_co, meas_pm10)
@@ -435,7 +434,6 @@ function drawInfo()
 4 PmGdyPorebsk
 5 PmSopBiPlowc
 6 PmGdySzafran
-
   PmGdaPowWiel- I can't find it in Excels
 */
 
@@ -492,4 +490,3 @@ function pm10_read_row(row)
   }*/
   return pm10_row;
 }
-
