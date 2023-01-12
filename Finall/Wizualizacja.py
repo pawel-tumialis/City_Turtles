@@ -4,9 +4,12 @@ import os
 import numpy as np
 
 # ------------defines
-path_to_data = "database"
+path_to_data = "my_database"
 data_name = "all.csv"
-ind = ['rozrywka', 'gastronomia', 'usługi', 'transport', 'zdrowie', 'edukacja', 'sport', 'sklepy', 'przyroda']
+
+class_dick_str = {}
+class_dick_val = {}
+
 point_top_left = [54.472069, 18.368674]
 point_down_rigth = [54.275297, 18.939957]
 x_number = 200
@@ -15,7 +18,6 @@ y_number = 140
 def showMap(fig):
     """
     This function is responsible for opening the map in the browser. The HTML file is saved with specified name.
-
     :param fig:
     :return:
     """
@@ -34,13 +36,12 @@ def showMap(fig):
 def setPlaces(points):
     """
     This function is responsible for visualisation of points on the map.
-
     :param points: DataFrame containing information about the points to visualise.
     :return: figure of type scatter_mapbox (from plotly.express library)
     """
     points['size'] = 100
     points['color'] = 1
-    points['wage'] = "{}".format(5)
+    points['wage'] = [class_dick_val[points.type[i]] for i in range(len(points))]
 
     color_scale = [(0, 'green'), (1, 'red')]
 
@@ -67,34 +68,36 @@ def add_wage_to_matrix(wage_matrix, point, squere_x, squere_y):
     wage_matrix[x][y] += 1 #point['wage']
     return 1
 
+
 if __name__ == "__main__":
-    w = np.zeros(9)
-    for i in range(len(ind)):
+
+    # prepare classes and subclasses lists 
+    my_classes = os.listdir(path_to_data)
+    my_subclasses = [[str.split('_')[0] for str in os.listdir(path_to_data + "/" + my_classes[i])] for i in range(len(my_classes))] 
+    for i in range(len(my_classes)): 
+        class_dick_str.update(dict.fromkeys(my_subclasses[i], my_classes[i]))
+
+    # get weights from user
+    for i in range(len(my_classes)):
         while True:
             try:
-                w[i] = int(input("Prosze podac wartosc wagi od 1 do 10 dla " + ind[i] + ": "))
-                if(w[i] <= 10 and w[i] >= 0):
+                w = int(input("Prosze podac wartosc wagi od 1 do 10 dla " + my_classes[i] + ": "))
+                if(w <= 10 and w >= 0):
+                    class_dick_val.update(dict.fromkeys(my_subclasses[i], w))
                     break
             except:
                 print("Nie ten typ/wartosc")
-    wagi = pd.DataFrame(w,
-    index=ind,
-    columns=['waga'])
-    print(wagi)
-    
-    files = os.listdir(path_to_data)
 
+    # save all .csv files to one .csv       
     all = pd.DataFrame()
-    #all.to_csv("all.csv", index = False)
 
-    for filename in files:
-        ds = pd.read_csv(path_to_data + "/" + filename)
-        all = pd.concat([all, ds], axis = 0)
+    for dir in os.listdir(path_to_data):
+        for file in os.listdir(path_to_data + "/" + dir):
+            ds = pd.read_csv(path_to_data + "/" + dir + "/" + file)
+            all = pd.concat([all, ds], axis = 0)
 
     del all['link']
 
-    #all.iloc[all['lat'].values > 54.444940].index.tolist()
-    #all.iloc[all['lat'].values < 54.275297].index.tolist()
     all = all.drop(all.iloc[all['lat'].values > point_top_left[0]].index.tolist(),axis=0)
     all.reset_index()
     all = all.drop(all.iloc[all['lat'].values < point_down_rigth[0]].index.tolist(),axis=0)
@@ -106,21 +109,18 @@ if __name__ == "__main__":
     all.reset_index()
     all.to_csv(data_name, index = False)
     
-    # -----------code
-    #create matrix
+    # create matrix
     wage_matrix = np.zeros((x_number, y_number))
-    squere_x= (point_top_left[0] - point_down_rigth[0])/x_number
-    squere_y= (point_down_rigth[1] - point_top_left[1])/y_number
+    squere_x = (point_top_left[0] - point_down_rigth[0])/x_number
+    squere_y = (point_down_rigth[1] - point_top_left[1])/y_number
     
-    #open csv and print points on map
+    # open csv and print points on map
     all_places = pd.DataFrame()
     df = pd.read_csv(data_name, index_col=False)
     frames = [all_places, df]
     all_places = pd.concat(frames)
     placesMap = setPlaces(all_places)
     showMap(placesMap)
-    
-    
     
     for i in range(len(all_places)):
         add_wage_to_matrix(wage_matrix, all_places.iloc[i], squere_x, squere_y)
