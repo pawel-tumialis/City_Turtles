@@ -4,11 +4,15 @@ import numpy as np
 ind = ['rozrywka', 'gastronomia', 'usługi', 'transport', 'zdrowie', 'edukacja', 'sport', 'sklepy', 'przyroda']
 w = np.zeros(9)
 #print(w)
-if(False):
-    for i in range(len(ind)):
-        w[i] = input("Prosze podac wartosc wagi od 1 do 10 dla " + ind[i] + ": ")
-        while (w[i] > 10 or w[i] < 0):
-            w[i] = input("Podaj wartosc od 0-10 debilu."+" Waga dla " + ind[i] + ": ")    
+
+for i in range(len(ind)):
+    while True:
+        try:
+            w[i] = int(input("Prosze podac wartosc wagi od 1 do 10 dla " + ind[i] + ": "))
+            if(w[i] <= 10 and w[i] >= 0):
+                break
+        except:
+            print("Nie ten typ/wartosc")
 
 wagi = pd.DataFrame(w,
      index=ind,
