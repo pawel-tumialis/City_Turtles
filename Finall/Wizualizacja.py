@@ -37,7 +37,7 @@ def setPlaces(points):
     :param points: DataFrame containing information about the points to visualise.
     :return: figure of type scatter_mapbox (from plotly.express library)
     """
-    points['size'] = 1000
+    points['size'] = 100
     points['color'] = 1
     points['wage'] = "{}".format(5)
 
@@ -106,9 +106,11 @@ if __name__ == "__main__":
     placesMap = setPlaces(all_places)
     showMap(placesMap)
     
-    #print matrix
-    '''
+    
+    
     for i in range(len(all_places)):
         add_wage_to_matrix(wage_matrix, all_places.iloc[i], squere_x, squere_y)
+    #print matrix
+        '''
     with np.printoptions(threshold=np.inf):
         print(wage_matrix) '''
