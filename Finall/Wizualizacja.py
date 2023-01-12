@@ -6,6 +6,7 @@ import numpy as np
 # ------------defines
 path_to_data = "database"
 data_name = "all.csv"
+ind = ['rozrywka', 'gastronomia', 'usługi', 'transport', 'zdrowie', 'edukacja', 'sport', 'sklepy', 'przyroda']
 point_top_left = [54.472069, 18.368674]
 point_down_rigth = [54.275297, 18.939957]
 x_number = 200
@@ -67,6 +68,19 @@ def add_wage_to_matrix(wage_matrix, point, squere_x, squere_y):
     return 1
 
 if __name__ == "__main__":
+    w = np.zeros(9)
+    for i in range(len(ind)):
+        while True:
+            try:
+                w[i] = int(input("Prosze podac wartosc wagi od 1 do 10 dla " + ind[i] + ": "))
+                if(w[i] <= 10 and w[i] >= 0):
+                    break
+            except:
+                print("Nie ten typ/wartosc")
+    wagi = pd.DataFrame(w,
+    index=ind,
+    columns=['waga'])
+    print(wagi)
     
     files = os.listdir(path_to_data)
 
