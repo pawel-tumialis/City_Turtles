@@ -78,15 +78,25 @@ if __name__ == "__main__":
         class_dick_str.update(dict.fromkeys(my_subclasses[i], my_classes[i]))
 
     # get weights from user
+    stop = False
     for i in range(len(my_classes)):
         while True:
             try:
-                w = int(input("Prosze podac wartosc wagi od 1 do 10 dla " + my_classes[i] + ": "))
-                if(w <= 10 and w >= 0):
-                    class_dick_val.update(dict.fromkeys(my_subclasses[i], w))
+                c = input("Prosze podac wartosc wagi od 1 do 10 dla " + my_classes[i] + ": ")
+                if(c == "e" or c == "E"):
+                    print('E key pressed - exiting program.')
+                    stop = True
                     break
+                else:
+                    w = int(c)
+                    if(w <= 10 and w >= 0):
+                        class_dick_val.update(dict.fromkeys(my_subclasses[i], w))
+                        break 
             except:
                 print("Nie ten typ/wartosc")
+        
+        if stop:
+            exit()
 
     # save all .csv files to one .csv       
     all = pd.DataFrame()
