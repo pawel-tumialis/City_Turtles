@@ -4,8 +4,9 @@ import os
 import numpy as np
 
 # ------------defines
-path_to_data = "data/"
-point_top_left = [54.444940, 18.435273]
+path_to_data = "database"
+data_name = "all.csv"
+point_top_left = [54.472069, 18.368674]
 point_down_rigth = [54.275297, 18.939957]
 x_number = 200
 y_number = 140
@@ -62,11 +63,36 @@ def add_wage_to_matrix(wage_matrix, point, squere_x, squere_y):
     y = int((point_down_rigth[1] - point['lon'])/squere_y)
     #print("X w tablicy {}".format(x))
     #print("Y w tablicy {}".format(y))
-    wage_matrix[x][y] += point['wage']
+    wage_matrix[x][y] += 1 #point['wage']
     return 1
 
 if __name__ == "__main__":
+    
+    files = os.listdir(path_to_data)
 
+    all = pd.DataFrame()
+    #all.to_csv("all.csv", index = False)
+
+    for filename in files:
+        ds = pd.read_csv(path_to_data + "/" + filename)
+        all = pd.concat([all, ds], axis = 0)
+
+
+    del all['link']
+
+    #all.iloc[all['lat'].values > 54.444940].index.tolist()
+    #all.iloc[all['lat'].values < 54.275297].index.tolist()
+    all = all.drop(all.iloc[all['lat'].values > point_top_left[0]].index.tolist(),axis=0)
+    all.reset_index()
+    all = all.drop(all.iloc[all['lat'].values < point_down_rigth[0]].index.tolist(),axis=0)
+    all.reset_index()
+
+    all = all.drop(all.iloc[all['lon'].values > point_down_rigth[1]].index.tolist(),axis=0)
+    all.reset_index()
+    all = all.drop(all.iloc[all['lon'].values < point_top_left[1]].index.tolist(),axis=0)
+    all.reset_index()
+    all.to_csv(data_name, index = False)
+    
      # -----------code
      #create matrix
     wage_matrix = np.zeros((x_number, y_number))
@@ -75,10 +101,13 @@ if __name__ == "__main__":
     
     #open csv and print points on map
     all_places = pd.DataFrame()
-    df = pd.read_csv(path_to_data + "apteka.csv", index_col=False)
+    df = pd.read_csv(data_name, index_col=False)
     frames = [all_places, df]
     all_places = pd.concat(frames)
     #placesMap = setPlaces(all_places)
     #showMap(placesMap)
     
-    #add_wage_to_matrix(wage_matrix, all_places.iloc[58], squere_x, squere_y)
+    for i in range(len(all_places)):
+        add_wage_to_matrix(wage_matrix, all_places.iloc[i], squere_x, squere_y)
+    with np.printoptions(threshold=np.inf):
+        print(wage_matrix)
