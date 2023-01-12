@@ -15,6 +15,8 @@ point_down_rigth = [54.275297, 18.939957]
 x_number = 200
 y_number = 140
 
+best_points_number = 5
+
 def showMap(fig):
     """
     This function is responsible for opening the map in the browser. The HTML file is saved with specified name.
@@ -39,7 +41,7 @@ def setPlaces(points):
     :param points: DataFrame containing information about the points to visualise.
     :return: figure of type scatter_mapbox (from plotly.express library)
     """
-    points['size'] = 100
+    points['size'] = 5
     points['color'] = 1
     points['wage'] = [str(class_dick_val[points.type[i]]) for i in range(len(points))]
 
@@ -63,9 +65,7 @@ def setPlaces(points):
 def add_wage_to_matrix(wage_matrix, point, squere_x, squere_y):
     x = int((point_top_left[0] - point['lat'])/squere_x)
     y = int((point_down_rigth[1] - point['lon'])/squere_y)
-    #print("X w tablicy {}".format(x))
-    #print("Y w tablicy {}".format(y))
-    wage_matrix[x][y] += 1 #point['wage']
+    wage_matrix[x][y] += class_dick_val[point['type']]
     return 1
 
 
@@ -128,3 +128,7 @@ if __name__ == "__main__":
         '''
     with np.printoptions(threshold=np.inf):
         print(wage_matrix) '''
+        
+    # print on map best points to live
+    
+    
