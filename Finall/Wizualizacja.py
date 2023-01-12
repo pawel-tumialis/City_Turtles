@@ -12,8 +12,8 @@ class_dick_val = {}
 
 point_top_left = [54.472069, 18.368674]
 point_down_rigth = [54.275297, 18.939957]
-x_number = 200
-y_number = 140
+x_number = 100
+y_number = 70
 
 best_points_number = 5
 
