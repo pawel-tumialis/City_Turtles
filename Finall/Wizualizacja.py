@@ -77,7 +77,7 @@ if __name__ == "__main__":
     for i in range(len(my_classes)): 
         class_dick_str.update(dict.fromkeys(my_subclasses[i], my_classes[i]))
 
-    # get weights from user
+     # get weights from user
     stop = False
     for i in range(len(my_classes)):
         while True:
@@ -97,7 +97,6 @@ if __name__ == "__main__":
         
         if stop:
             exit()
-
     # save all .csv files to one .csv       
     all = pd.DataFrame()
 
@@ -134,11 +133,25 @@ if __name__ == "__main__":
     
     for i in range(len(all_places)):
         add_wage_to_matrix(wage_matrix, all_places.iloc[i], squere_x, squere_y)
-    #print matrix
+    # print matrix
         '''
     with np.printoptions(threshold=np.inf):
         print(wage_matrix) '''
         
-    # print on map best points to live
-    
+    # finding best points
+    best_points = np.zeros((best_points_number, 3))
+    for i in range(x_number):
+        for j in range(y_number):
+            if(wage_matrix[i][j] > best_points[0][0]):
+                for k in range(4):
+                    best_points[k+1][0] = best_points[k][0]
+                    best_points[k+1][1] = best_points[k][1]
+                    best_points[k+1][2] = best_points[k][2]
+                best_points[0][0] = wage_matrix[i][j]
+                best_points[0][1] = i
+                best_points[0][2] = j
+    #print(best_points)
+        
+                        
+        
     
