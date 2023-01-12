@@ -142,14 +142,17 @@ if __name__ == "__main__":
     best_points = np.zeros((best_points_number, 3))
     for i in range(x_number):
         for j in range(y_number):
-            if(wage_matrix[i][j] > best_points[4][0]):
-                for k in range(4):
-                    best_points[k+1][0] = best_points[k][0]
-                    best_points[k+1][1] = best_points[k][1]
-                    best_points[k+1][2] = best_points[k][2]
-                best_points[0][0] = wage_matrix[i][j]
-                best_points[0][1] = i
-                best_points[0][2] = j
+            k = 0
+            while wage_matrix[i][j] > best_points[k][0] and k < best_points_number - 1:
+                if k > 1:
+                    best_points[k-1][0] = best_points[k][0]
+                    best_points[k-1][1] = best_points[k][1]
+                    best_points[k-1][2] = best_points[k][2]
+                k += 1
+
+            best_points[k-1][0] = wage_matrix[i][j]
+            best_points[k-1][1] = i
+            best_points[k-1][2] = j
 
     best_points_frame = pd.DataFrame(columns=['lat', 'lon', 'wage', 'name'])
     for i in range(best_points_number):
