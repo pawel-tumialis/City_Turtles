@@ -129,7 +129,7 @@ if __name__ == "__main__":
     frames = [all_places, df]
     all_places = pd.concat(frames)
     placesMap = setPlaces(all_places)
-    showMap(placesMap)
+    #showMap(placesMap)
     
     for i in range(len(all_places)):
         add_wage_to_matrix(wage_matrix, all_places.iloc[i], squere_x, squere_y)
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     best_points = np.zeros((best_points_number, 3))
     for i in range(x_number):
         for j in range(y_number):
-            if(wage_matrix[i][j] > best_points[0][0]):
+            if(wage_matrix[i][j] > best_points[4][0]):
                 for k in range(4):
                     best_points[k+1][0] = best_points[k][0]
                     best_points[k+1][1] = best_points[k][1]
@@ -150,8 +150,23 @@ if __name__ == "__main__":
                 best_points[0][0] = wage_matrix[i][j]
                 best_points[0][1] = i
                 best_points[0][2] = j
-    #print(best_points)
-        
+
+    best_points_frame = pd.DataFrame(columns=['lat', 'lon', 'wage', 'name'])
+    for i in range(best_points_number):
+        best_points_frame.loc[i] = {'lat':(point_top_left[0] - best_points[i][1]*squere_x+squere_x/2), 'lon':(point_down_rigth[1] - best_points[i][2]*squere_y+squere_y/2), 'wage':best_points[i][0], 'name':"Najelpsze miejsce"}
+    
+    best_points_frame['size'] = 5
+    print(best_points_frame)
+    placesMap = px.scatter_mapbox(best_points_frame,    #poprawic dodawanie do wszystkich
+                            lat='lat',
+                            lon='lon',
+                            hover_name='name',
+                            color='name',
+                            size='size',
+                            zoom=10,
+                            height=800,
+                            width=1200)
+    showMap(placesMap)
                         
         
     
