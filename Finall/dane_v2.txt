@@ -1,0 +1,28 @@
+import pandas as pd
+import os
+
+path = "database"
+files = os.listdir(path)
+
+all = pd.DataFrame()
+#all.to_csv("all.csv", index = False)
+
+for filename in files:
+    ds = pd.read_csv("database/" + filename)
+    all = pd.concat([all, ds], axis = 0)
+
+
+del all['link']
+
+#all.iloc[all['lat'].values > 54.444940].index.tolist()
+#all.iloc[all['lat'].values < 54.275297].index.tolist()
+all = all.drop(all.iloc[all['lat'].values > 54.444940].index.tolist(),axis=0)
+all.reset_index()
+all = all.drop(all.iloc[all['lat'].values < 54.275297].index.tolist(),axis=0)
+all.reset_index()
+
+all = all.drop(all.iloc[all['lon'].values > 18.939957].index.tolist(),axis=0)
+all.reset_index()
+all = all.drop(all.iloc[all['lon'].values < 18.435273].index.tolist(),axis=0)
+all.reset_index()
+all.to_csv("all.csv", index = False)
