@@ -156,19 +156,19 @@ if __name__ == "__main__":
 
     best_points_frame = pd.DataFrame(columns=['lat', 'lon', 'wage', 'name'])
     for i in range(best_points_number):
-        best_points_frame.loc[i] = {'lat':(point_top_left[0] - best_points[i][1]*squere_x+squere_x/2), 'lon':(point_down_rigth[1] - best_points[i][2]*squere_y+squere_y/2), 'wage':best_points[i][0], 'name':"Najelpsze miejsce"}
+        best_points_frame.loc[i] = {'lat':(point_top_left[0] - best_points[i][1]*squere_x+squere_x/2), 'lon':(point_down_rigth[1] - best_points[i][2]*squere_y+squere_y/2), 'wage':best_points[i][0], 'name':"Najlepsze miejsce: {}".format(best_points[i][0])}
     
-    best_points_frame['size'] = 5
-    print(best_points_frame)
-    placesMap = px.scatter_mapbox(best_points_frame,    #poprawic dodawanie do wszystkich
-                            lat='lat',
-                            lon='lon',
-                            hover_name='name',
-                            color='name',
-                            size='size',
-                            zoom=10,
-                            height=800,
-                            width=1200)
+    #best_points_frame['size'] = 5
+    #print(best_points_frame)
+    placesMap.add_scattermapbox(   #poprawic dodawanie do wszystkich
+                                lat = best_points_frame['lat'],
+                                lon = best_points_frame['lon'],
+                                hoverinfo = 'lat + lon + text',
+                                text=best_points_frame['name'],
+                                marker_size = 30,
+                                name = "Najlepsze miejsce",
+                                marker_color = 'rgb(0, 0, 0)',
+                                showlegend = True)
     showMap(placesMap)
                         
         
