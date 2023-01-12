@@ -41,7 +41,7 @@ def setPlaces(points):
     """
     points['size'] = 100
     points['color'] = 1
-    points['wage'] = [class_dick_val[points.type[i]] for i in range(len(points))]
+    points['wage'] = [str(class_dick_val[points.type[i]]) for i in range(len(points))]
 
     color_scale = [(0, 'green'), (1, 'red')]
 
