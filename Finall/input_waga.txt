@@ -1,0 +1,16 @@
+import pandas as pd
+import numpy as np
+
+ind = ['rozrywka', 'gastronomia', 'usługi', 'transport', 'zdrowie', 'edukacja', 'sport', 'sklepy', 'przyroda']
+w = np.zeros(9)
+#print(w)
+if(False):
+    for i in range(len(ind)):
+        w[i] = input("Prosze podac wartosc wagi od 1 do 10 dla " + ind[i] + ": ")
+        while (w[i] > 10 or w[i] < 0):
+            w[i] = input("Podaj wartosc od 0-10 debilu."+" Waga dla " + ind[i] + ": ")    
+
+wagi = pd.DataFrame(w,
+     index=ind,
+     columns=['waga'])
+print(wagi)
