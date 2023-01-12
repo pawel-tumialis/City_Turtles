@@ -77,7 +77,6 @@ if __name__ == "__main__":
         ds = pd.read_csv(path_to_data + "/" + filename)
         all = pd.concat([all, ds], axis = 0)
 
-
     del all['link']
 
     #all.iloc[all['lat'].values > 54.444940].index.tolist()
@@ -93,8 +92,8 @@ if __name__ == "__main__":
     all.reset_index()
     all.to_csv(data_name, index = False)
     
-     # -----------code
-     #create matrix
+    # -----------code
+    #create matrix
     wage_matrix = np.zeros((x_number, y_number))
     squere_x= (point_top_left[0] - point_down_rigth[0])/x_number
     squere_y= (point_down_rigth[1] - point_top_left[1])/y_number
@@ -104,10 +103,12 @@ if __name__ == "__main__":
     df = pd.read_csv(data_name, index_col=False)
     frames = [all_places, df]
     all_places = pd.concat(frames)
-    #placesMap = setPlaces(all_places)
-    #showMap(placesMap)
+    placesMap = setPlaces(all_places)
+    showMap(placesMap)
     
+    #print matrix
+    '''
     for i in range(len(all_places)):
         add_wage_to_matrix(wage_matrix, all_places.iloc[i], squere_x, squere_y)
     with np.printoptions(threshold=np.inf):
-        print(wage_matrix)
+        print(wage_matrix) '''
