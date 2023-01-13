@@ -9,13 +9,16 @@ data_name = "all.csv"
 
 class_dick_str = {}
 class_dick_val = {}
+class_dick_index = {}
+
+class_presence_matrix = {}
 
 point_top_left = [54.472069, 18.368674]
 point_down_rigth = [54.275297, 18.939957]
 x_number = 100
-y_number = 70
-
-best_points_number = 5
+y_number = 100
+friendly_distance = 5
+best_points_number = 200
 
 def showMap(fig):
     """
@@ -41,8 +44,8 @@ def setPlaces(points):
     :param points: DataFrame containing information about the points to visualise.
     :return: figure of type scatter_mapbox (from plotly.express library)
     """
-    points['size'] = 5
-    points['color'] = 1
+    points['size'] = 100
+    points['color'] = [str(class_dick_val[points.type[i]]) for i in range(len(points))]
     points['wage'] = [str(class_dick_val[points.type[i]]) for i in range(len(points))]
 
     color_scale = [(0, 'green'), (1, 'red')]
@@ -53,19 +56,33 @@ def setPlaces(points):
                             hover_name="title",
                             # hover_data=["title", "size"],
                             # color_continuous_scale=px.colors.sequential.Plasma,
-                            color='type',
+                            color= "type", # TODO make it consistent with class 
                             size="size",
                             text='wage',
-                            zoom=10,
+                            zoom=5,
                             height=800,
                             width=1200)
 
     return fig
 
 def add_wage_to_matrix(wage_matrix, point, squere_x, squere_y):
+
     x = int((point_top_left[0] - point['lat'])/squere_x)
     y = int((point_down_rigth[1] - point['lon'])/squere_y)
-    wage_matrix[x][y] += class_dick_val[point['type']]
+    dx = 0
+    dy = 0
+    amp = 0
+    div = 1
+    for yy in range(2*friendly_distance):
+        for xx in range(2*friendly_distance):
+            dx = xx - friendly_distance
+            dy = yy - friendly_distance
+            amp = 2*friendly_distance + 1 - (abs(dx) + abs(dy))
+            if x + dx < x_number and y + dy < y_number:
+                
+                class_presence_matrix[class_dick_index[point['type']]][x + dx][y + dy] += 1
+                div = 2 * class_presence_matrix[class_dick_index[point['type']]][x + dx][y + dy] 
+                wage_matrix[x + dx][y + dy] += amp*class_dick_val[point['type']] / div
     return 1
 
 
@@ -76,6 +93,7 @@ if __name__ == "__main__":
     my_subclasses = [[str.split('_')[0] for str in os.listdir(path_to_data + "/" + my_classes[i])] for i in range(len(my_classes))] 
     for i in range(len(my_classes)): 
         class_dick_str.update(dict.fromkeys(my_subclasses[i], my_classes[i]))
+        class_dick_index.update(dict.fromkeys(my_subclasses[i], i))
 
      # get weights from user
     stop = False
@@ -118,7 +136,9 @@ if __name__ == "__main__":
     all.reset_index()
     all.to_csv(data_name, index = False)
     
-    # create matrix
+    # create matrices - one for wages and one for presence 
+    class_presence_matrix = [np.zeros((x_number, y_number)) for cl in my_classes]
+
     wage_matrix = np.zeros((x_number, y_number))
     squere_x = (point_top_left[0] - point_down_rigth[0])/x_number
     squere_y = (point_down_rigth[1] - point_top_left[1])/y_number
@@ -154,9 +174,11 @@ if __name__ == "__main__":
                 best_points[k][2] = j    
                 k -= 1
 
-    best_points_frame = pd.DataFrame(columns=['lat', 'lon', 'wage', 'name'])
+    best_point_value = best_points[0][0]
+    best_points_frame = pd.DataFrame(columns=['lat', 'lon', 'wage', 'name', 'color'])
     for i in range(best_points_number):
-        best_points_frame.loc[i] = {'lat':(point_top_left[0] - best_points[i][1]*squere_x+squere_x/2), 'lon':(point_down_rigth[1] - best_points[i][2]*squere_y+squere_y/2), 'wage':best_points[i][0], 'name':"Najlepsze miejsce: {}".format(best_points[i][0])}
+        best_points_frame.loc[i] = {'lat':(point_top_left[0] - best_points[i][1]*squere_x+squere_x/2), 'lon':(point_down_rigth[1] - best_points[i][2]*squere_y+squere_y/2), 'wage':best_points[i][0], 'name':"Najlepsze miejsce: {}".format(best_points[i][0]),
+        'color':('rgb('+str(3*(best_point_value - best_points[i][0])) + ','+str(3*(best_point_value - best_points[i][0])) +',' +str(3*(best_point_value - best_points[i][0])) +')')}
     
     #best_points_frame['size'] = 5
     #print(best_points_frame)
@@ -167,7 +189,7 @@ if __name__ == "__main__":
                                 text=best_points_frame['name'],
                                 marker_size = 30,
                                 name = "Najlepsze miejsce",
-                                marker_color = 'rgb(0, 0, 0)',
+                                marker_color =  best_points_frame['color'],
                                 showlegend = True)
     showMap(placesMap)
                         
