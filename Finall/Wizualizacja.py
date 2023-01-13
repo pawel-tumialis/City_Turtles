@@ -179,7 +179,7 @@ if __name__ == "__main__":
     for i in range(best_points_number):
         ind = best_points_number-i-1
         best_points_frame.loc[i] = {'lat':(point_top_left[0] - best_points[ind][1]*squere_x+squere_x/2), 'lon':(point_down_rigth[1] - best_points[ind][2]*squere_y+squere_y/2), 'wage':best_points[i][0], 'name':"Najlepsze miejsce: {}".format(best_points[ind][0]),
-        'color':('rgb('+str(3*(best_point_value - best_points[ind][0])) + ','+str(3*(best_point_value - best_points[ind][0])) +',' +str(3*(best_point_value - best_points[ind][0])) +')')}
+        'color':('rgb('+str(255*(best_point_value - best_points[ind][0])/best_point_value) + ','+str(255*(best_point_value - best_points[ind][0])/best_point_value) +',' +str(255*(best_point_value - best_points[ind][0])/best_point_value) +')')}
     
     #best_points_frame['size'] = 5
     #print(best_points_frame)
