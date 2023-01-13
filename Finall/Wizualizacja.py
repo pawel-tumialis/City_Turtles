@@ -54,9 +54,7 @@ def setPlaces(points):
                             lat="lat",
                             lon="lon",
                             hover_name="title",
-                            # hover_data=["title", "size"],
-                            # color_continuous_scale=px.colors.sequential.Plasma,
-                            color= "type", # TODO make it consistent with class 
+                            color= "type",
                             size="size",
                             text='wage',
                             zoom=10,
@@ -149,7 +147,6 @@ if __name__ == "__main__":
     frames = [all_places, df]
     all_places = pd.concat(frames)
     placesMap = setPlaces(all_places)
-    #showMap(placesMap)
     
     for i in range(len(all_places)):
         add_wage_to_matrix(wage_matrix, all_places.iloc[i], squere_x, squere_y)
@@ -181,14 +178,13 @@ if __name__ == "__main__":
         best_points_frame.loc[i] = {'lat':(point_top_left[0] - best_points[ind][1]*squere_x+squere_x/2), 'lon':(point_down_rigth[1] - best_points[ind][2]*squere_y+squere_y/2), 'wage':best_points[i][0], 'name':"Najlepsze miejsce: {}".format(best_points[ind][0]),
         'color':('rgb('+str(255*(best_point_value - best_points[ind][0])/best_point_value) + ','+str(255*(best_point_value - best_points[ind][0])/best_point_value) +',' +str(255*(best_point_value - best_points[ind][0])/best_point_value) +')')}
     
-    #best_points_frame['size'] = 5
-    #print(best_points_frame)
-    placesMap.add_scattermapbox(   #poprawic dodawanie do wszystkich
+    placesMap.add_scattermapbox(
                                 lat = best_points_frame['lat'],
                                 lon = best_points_frame['lon'],
                                 hoverinfo = 'lat + lon + text',
                                 text=best_points_frame['name'],
                                 marker_size = 30,
+                                opacity = 0.8,
                                 name = "Najlepsze miejsce",
                                 marker_color =  best_points_frame['color'],
                                 showlegend = True)
