@@ -59,7 +59,7 @@ def setPlaces(points):
                             color= "type", # TODO make it consistent with class 
                             size="size",
                             text='wage',
-                            zoom=5,
+                            zoom=10,
                             height=800,
                             width=1200)
 
@@ -177,8 +177,9 @@ if __name__ == "__main__":
     best_point_value = best_points[0][0]
     best_points_frame = pd.DataFrame(columns=['lat', 'lon', 'wage', 'name', 'color'])
     for i in range(best_points_number):
-        best_points_frame.loc[i] = {'lat':(point_top_left[0] - best_points[i][1]*squere_x+squere_x/2), 'lon':(point_down_rigth[1] - best_points[i][2]*squere_y+squere_y/2), 'wage':best_points[i][0], 'name':"Najlepsze miejsce: {}".format(best_points[i][0]),
-        'color':('rgb('+str(3*(best_point_value - best_points[i][0])) + ','+str(3*(best_point_value - best_points[i][0])) +',' +str(3*(best_point_value - best_points[i][0])) +')')}
+        ind = best_points_number-i-1
+        best_points_frame.loc[i] = {'lat':(point_top_left[0] - best_points[ind][1]*squere_x+squere_x/2), 'lon':(point_down_rigth[1] - best_points[ind][2]*squere_y+squere_y/2), 'wage':best_points[i][0], 'name':"Najlepsze miejsce: {}".format(best_points[ind][0]),
+        'color':('rgb('+str(3*(best_point_value - best_points[ind][0])) + ','+str(3*(best_point_value - best_points[ind][0])) +',' +str(3*(best_point_value - best_points[ind][0])) +')')}
     
     #best_points_frame['size'] = 5
     #print(best_points_frame)
