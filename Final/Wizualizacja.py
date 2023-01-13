@@ -95,19 +95,26 @@ if __name__ == "__main__":
 
      # get weights from user
     stop = False
-    for i in range(len(my_classes)):
+    for i in range(len(my_classes) + 1):
         while True:
             try:
-                c = input("Prosze podac wartosc wagi od 1 do 10 dla " + my_classes[i] + ": ")
-                if(c == "e" or c == "E"):
-                    print('E key pressed - exiting program.')
-                    stop = True
-                    break
+                if i < len(my_classes):
+                    c = input("Prosze podac wartosc wagi od 1 do 10 dla " + my_classes[i] + ": ")
+                    if(c == "e" or c == "E"):
+                        print('E key pressed - exiting program.')
+                        stop = True
+                        break
+                    else:
+                        w = int(c)
+                        if(w <= 10 and w >= 0):
+                            class_dick_val.update(dict.fromkeys(my_subclasses[i], w))
+                            break 
                 else:
-                    w = int(c)
-                    if(w <= 10 and w >= 0):
-                        class_dick_val.update(dict.fromkeys(my_subclasses[i], w))
+                    num = int(input("Wybor ilosci przedstawionych dopasowan - prosze podac wartosc od 1 do 20 : "))
+                    if(num <= 20 and num >= 0):
+                        best_points_number = 10 * num
                         break 
+
             except:
                 print("Nie ten typ/wartosc")
         
@@ -191,4 +198,3 @@ if __name__ == "__main__":
     showMap(placesMap)
                         
         
-    
